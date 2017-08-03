@@ -1,0 +1,21 @@
+sudo: required 
+dist: trusty
+
+language: node_js
+
+node_js:
+  - "node"
+
+cache:
+  directories:
+    - test/elm-stuff/build-artifacts
+
+os:
+  - linux
+
+install:
+  - cd examples
+  - npm install
+
+script: npm run dist
+

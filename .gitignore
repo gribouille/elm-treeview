@@ -1,0 +1,6 @@
+node_modules/
+elm-stuff/
+tests/elm-stuff/
+repl-temp-*
+dist/
+.directory
