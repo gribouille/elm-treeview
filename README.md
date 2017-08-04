@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/gribouille/elm-treeview.svg?branch=master)](https://travis-ci.org/gribouille/elm-treeview)
 
-A customizable ELM treeview component. [DEMOS](https://gribouille.github.io/demos/elm-treeview/latest/)
+A customizable ELM treeview component. 
+
+[DEMOS](https://gribouille.github.io/demos/elm-treeview/latest/)
 
 
 ## Example
@@ -62,7 +64,7 @@ main =
     }
 ```
 
-<div style="text-align:center"><img src ="./ex1.png" /></div>
+<p align="center"><img src="./ex1.png" /></p>
 
 
 With search input:
@@ -75,7 +77,8 @@ config =
   in
     {d | search = { enable = True}}
 ```
-<div style="text-align:center"><img src ="./ex2.png" /></div>
+
+<p align="center"><img src="./ex2.png" /></p>
 
 With checkbox selection:
 
@@ -87,7 +90,8 @@ config =
   in
     {d | checkbox = { enable = True, multiple = True, cascade = True}}
 ```
-<div style="text-align:center"><img src ="./ex3.png" /></div>
+
+<p align="center"><img src="./ex3.png" /></p>
 
 
 ## Theme
