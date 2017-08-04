@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/gribouille/elm-treeview.svg?branch=master)](https://travis-ci.org/gribouille/elm-treeview)
 
-A customizable ELM treeview component.
+A customizable ELM treeview component. [DEMOS](https://gribouille.github.io/demos/elm-treeview/latest/)
 
 
 ## Example
