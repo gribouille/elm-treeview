@@ -1,7 +1,7 @@
 module Treeview exposing (
   Config, Model, Node(..), Options, Styles, Style, Sort(..), default, node,
   Msg(..), update, nodeKey, nodeChildren, setNodeChildren, view, nodeTitle,
-  toggleNode, setNodeVisible, nodeVisible
+  toggleNode, setNodeVisible, nodeVisible, toggleAll, toggle
   )
 
 
@@ -33,7 +33,7 @@ Usage example:
 ## Model
 @docs Config, Model, Node, Options, Styles, Style, Sort, default
 @docs node, nodeKey, nodeChildren, setNodeChildren, nodeTitle
-@docs toggleNode, setNodeVisible, nodeVisible
+@docs toggleNode, setNodeVisible, nodeVisible, toggleAll, toggle
 
 ## Messages
 @docs Msg, update
@@ -237,31 +237,38 @@ node key title style selectable children =
 
 {-| Get the node key. -}
 nodeKey : Node -> Key
-nodeKey (Node x _ _ _) = x
+nodeKey (Node x _ _ _) =
+  x
 
 {-| Get the node title. -}
 nodeTitle : Node -> Title
-nodeTitle (Node _ x _ _) = x
+nodeTitle (Node _ x _ _) =
+  x
 
 {-| Get the node children. -}
 nodeChildren : Node -> Children
-nodeChildren (Node _ _ _ x) = x
+nodeChildren (Node _ _ _ x) =
+  x
 
 {-| Get the node visibility. -}
 nodeVisible : Node -> Visible
-nodeVisible (Node _ _ opt _) = opt.visible
+nodeVisible (Node _ _ opt _) =
+  opt.visible
 
 {-| Toggle the node opening. -}
 toggleNode : Node -> Node
-toggleNode (Node a b c d) = Node a b { c | opened = not c.opened } d
+toggleNode (Node a b c d) =
+  Node a b { c | opened = not c.opened } d
 
 {-| Set the node children. -}
 setNodeChildren : Children -> Node -> Node
-setNodeChildren children (Node a b c _) = Node a b c children
+setNodeChildren children (Node a b c _) =
+  Node a b c children
 
 {-| Set the node visibility. -}
 setNodeVisible : Visible -> Node -> Node
-setNodeVisible val (Node a b c d) = Node a b { c | visible = val } d
+setNodeVisible val (Node a b c d) =
+  Node a b { c | visible = val } d
 
 
 
@@ -328,7 +335,9 @@ setNodesCheckedCascade val (Node k t opt children) =
 
 -- Filter the treeview nodes in function of search pattern.
 search : String -> Model -> Model
-search val = List.map (searchItem val)
+search val =
+  List.map (searchItem val)
+
 
 {- Rules:
     - ignore the case
@@ -354,9 +363,11 @@ searchItem val (Node k t opt c) =
         in
           Node k t options (Just children)
 
--- Toggle the opened options.
+{-|  Toggle the opened options. -}
 toggle : Key -> Model -> Model
-toggle key nodes = List.map (toggleItem key) nodes
+toggle key nodes =
+  List.map (toggleItem key) nodes
+
 
 toggleItem : Key -> Node -> Node
 toggleItem key node =
@@ -367,11 +378,23 @@ toggleItem key node =
     in
       case children of
         Nothing -> node
-        Just c ->
-          let
-            new = List.map (toggleItem key) c
-          in
-            setNodeChildren (Just new) node
+        Just c -> setNodeChildren (Just (List.map (toggleItem key) c)) node
+
+
+{-| Toggle all items. -}
+toggleAll : Model -> Model
+toggleAll =
+    List.map toggleAllItem
+
+
+toggleAllItem : Node -> Node
+toggleAllItem node =
+  let
+    children = nodeChildren node
+      |> Maybe.andThen (Just << (List.map toggleAllItem))
+  in
+    toggleNode node
+      |> setNodeChildren children
 
 
 --  VIEW
