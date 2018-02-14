@@ -1,7 +1,7 @@
 module Treeview exposing (
-  Config, Model, Node, Options, Styles, Style, Sort(..), default, node,
-  Msg, update,
-  view
+  Config, Model, Node(..), Options, Styles, Style, Sort(..), default, node,
+  Msg(..), update, nodeKey, nodeChildren, setNodeChildren, view, nodeTitle,
+  toggleNode, setNodeVisible, nodeVisible
   )
 
 
@@ -21,17 +21,19 @@ Usage example:
     config : Config
     config = default styles
 
-    main : Program Never Model Msg 
+    main : Program Never Model Msg
     main =
       Html.beginnerProgram
         { model = model
         , view = view config
-        , update = update 
+        , update = update
         }
 
 
 ## Model
-@docs Config, Model, Node, Options, Styles, Style, Sort, default, node
+@docs Config, Model, Node, Options, Styles, Style, Sort, default
+@docs node, nodeKey, nodeChildren, setNodeChildren, nodeTitle
+@docs toggleNode, setNodeVisible, nodeVisible
 
 ## Messages
 @docs Msg, update
@@ -43,7 +45,7 @@ Usage example:
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-
+import Json.Decode as Decode
 
 
 -- MODEL
@@ -66,7 +68,7 @@ Use default to get a default configuration and set a specific options.
 Example:
 
     config : Config
-    config = 
+    config =
       let
         d = default styles
       in
@@ -74,7 +76,7 @@ Example:
 
  -}
 type alias Config =
-  { checkbox : 
+  { checkbox :
     { enable : Bool
     , multiple : Bool
     , cascade : Bool
@@ -91,12 +93,12 @@ type alias Config =
   }
 
 
-{-| Model of treeview. 
+{-| Model of treeview.
 
 Example:
 
     model : Model
-    model = 
+    model =
       [ T.node "pA" "Project A" "folder" False <| Just [
           T.node "pAg1" "Report 1" "folder" False <| Just [
             T.node "pAg1f1" "report_1_revA.pdf" "pdf" True Nothing,
@@ -124,11 +126,11 @@ Example:
 type alias Model = List Node
 
 
-{-| Node is an item of treeview. 
+{-| Node is an item of treeview.
 
 Each node has:
-  - an unique key 
-  - a title 
+  - an unique key
+  - a title
   - a list of options (see `Options`)
   - maybe list of children.
 -}
@@ -144,21 +146,21 @@ Options:
   - `visible`: to hide the node
   - `checked`: to select the node (required `Config.checkbox.enable = true`).
 -}
-type alias Options = 
-  { style: StyleName 
-  , selectable: Selectable 
-  , opened: Opened 
-  , disabled: Disabled 
+type alias Options =
+  { style: StyleName
+  , selectable: Selectable
+  , opened: Opened
+  , disabled: Disabled
   , visible: Visible
   , checked : Checked
   }
 
-{-| List of node's styles. 
+{-| List of node's styles.
 
 Example:
 
     styles : Styles
-    styles = 
+    styles =
       [ T.Style "folder" ("folder yellow", "folder-open yellow") ""
       , T.Style "archive" ("file-archive-o", "file-archive-o") ""
       , T.Style "word" ("file-word-o", "file-word-o") "blue"
@@ -171,14 +173,14 @@ Example:
 -}
 type alias Styles = List Style
 
-{-| Define the style of node. 
+{-| Define the style of node.
 
 Options:
   - `name`: a unique id of style
   - `icon`: icon when the node is closed and when the node is opened
   - `class`: CSS class of node.
 
-Note: the CSS class `opened` is added when the node is opened thus you can 
+Note: the CSS class `opened` is added when the node is opened thus you can
 defined a custom style in function of node state:
 ```scss
 .myNodeStyle {
@@ -187,7 +189,7 @@ defined a custom style in function of node state:
 }
 ```
 -}
-type alias Style = 
+type alias Style =
   { name : StyleName
   , icon : Icon
   , class : Class
@@ -199,7 +201,7 @@ type alias Style =
   - `Asc` = ascending order
   - `Desc` = descending order
 -}
-type Sort = None | Asc | Desc 
+type Sort = None | Asc | Desc
 
 type alias StyleName = String
 type alias Opened = Bool
@@ -216,8 +218,8 @@ type alias Children = Maybe (List Node)
 
 
 {-| Create a default `Config` in function of list of styles. -}
-default : Styles -> Config 
-default ls = 
+default : Styles -> Config
+default ls =
   { checkbox = {enable = False, multiple = False, cascade = False}
   , search = {enable = False}
   , sort = None
@@ -227,30 +229,37 @@ default ls =
 
 {-| Shortcut to create a new `Node`. -}
 node : Key -> Title -> StyleName -> Selectable -> Children -> Node
-node key title style selectable children = 
-  Node key title (Options style selectable False False True False) children
+node key title style selectable children =
+  Node key title (Options style selectable True False True False) children
 
 
 -- Node getters / setters
 
+{-| Get the node key. -}
 nodeKey : Node -> Key
 nodeKey (Node x _ _ _) = x
 
+{-| Get the node title. -}
 nodeTitle : Node -> Title
 nodeTitle (Node _ x _ _) = x
 
+{-| Get the node children. -}
 nodeChildren : Node -> Children
 nodeChildren (Node _ _ _ x) = x
 
+{-| Get the node visibility. -}
 nodeVisible : Node -> Visible
 nodeVisible (Node _ _ opt _) = opt.visible
 
+{-| Toggle the node opening. -}
 toggleNode : Node -> Node
 toggleNode (Node a b c d) = Node a b { c | opened = not c.opened } d
 
+{-| Set the node children. -}
 setNodeChildren : Children -> Node -> Node
 setNodeChildren children (Node a b c _) = Node a b c children
 
+{-| Set the node visibility. -}
 setNodeVisible : Visible -> Node -> Node
 setNodeVisible val (Node a b c d) = Node a b { c | visible = val } d
 
@@ -265,7 +274,7 @@ setNodeVisible val (Node a b c d) = Node a b { c | visible = val } d
   - `Search String`: filter search
   - `ToggleCheck Multiple Cascade Key Value`: check/uncheck a node checkbox.
 -}
-type Msg 
+type Msg
   = Toggle Key
   | Select Key
   | Search String
@@ -282,7 +291,7 @@ update msg model =
 
 -- Update the options.checked value of nodes.
 check : Bool -> Bool -> Key -> Bool ->Model -> Model
-check multiple cascade key value  = 
+check multiple cascade key value  =
   let
     freset = List.map (setNodesCheckedCascade False)
     fset = List.map (setNodeChecked cascade key value)
@@ -296,12 +305,12 @@ check multiple cascade key value  =
 -- value is applied to children.
 setNodeChecked : Bool -> Key -> Checked -> Node -> Node
 setNodeChecked cascade key val  (Node k t opt children) =
-  if k == key then 
+  if k == key then
     let
       options = { opt | checked = not val }
     in
       if cascade then
-        Node k t options <| Maybe.map (List.map (setNodesCheckedCascade (not val))) children  
+        Node k t options <| Maybe.map (List.map (setNodesCheckedCascade (not val))) children
       else
         Node k t options children
   else
@@ -313,7 +322,7 @@ setNodesCheckedCascade val (Node k t opt children) =
   let
     options = { opt | checked = val }
   in
-    case children of 
+    case children of
       Nothing -> Node k t options Nothing
       Just cs -> Node k t options <| Just (List.map (setNodesCheckedCascade val) cs)
 
@@ -328,8 +337,8 @@ search val = List.map (searchItem val)
 -}
 searchItem : String -> Node -> Node
 searchItem val (Node k t opt c) =
-  case c of 
-      Nothing -> 
+  case c of
+      Nothing ->
         let
           pattern = String.toLower val
           title = String.toLower t
@@ -338,7 +347,7 @@ searchItem val (Node k t opt c) =
         in
           Node k t options Nothing
       Just cs ->
-        let 
+        let
           children = List.map (searchItem val) cs
           allHide = List.all (nodeVisible >> not) children
           options = {opt | visible = not allHide}
@@ -350,19 +359,19 @@ toggle : Key -> Model -> Model
 toggle key nodes = List.map (toggleItem key) nodes
 
 toggleItem : Key -> Node -> Node
-toggleItem key node = 
-  if (nodeKey node) == key then toggleNode node  
+toggleItem key node =
+  if (nodeKey node) == key then toggleNode node
   else
-    let 
-      children = nodeChildren node 
-    in 
-      case children of 
+    let
+      children = nodeChildren node
+    in
+      case children of
         Nothing -> node
-        Just c -> 
+        Just c ->
           let
-            new = List.map (toggleItem key) c 
+            new = List.map (toggleItem key) c
           in
-            setNodeChildren (Just new) node 
+            setNodeChildren (Just new) node
 
 
 --  VIEW
@@ -370,8 +379,8 @@ toggleItem key node =
 
 {-| Tree treeview view function. -}
 view : Config -> Model -> H.Html Msg
-view config model = 
-  H.div [HA.class ("treeview " ++ config.look.theme)] 
+view config model =
+  H.div [HA.class ("treeview " ++ config.look.theme)]
   [ optional config.search.enable (viewSearch config)
   , H.ul [HA.class "root"] <| List.map (viewItem config) model
   ]
@@ -379,10 +388,10 @@ view config model =
 
 -- Search toolbar view.
 viewSearch : Config -> H.Html Msg
-viewSearch config = H.div [ HA.class "search" ] 
-  [ H.input 
+viewSearch config = H.div [ HA.class "search" ]
+  [ H.input
     [ HA.type_ "text"
-    , HE.onInput Search 
+    , HE.onInput Search
     , HA.placeholder "search" ] []
   ]
 
@@ -391,8 +400,8 @@ viewItem : Config -> Node -> H.Html Msg
 viewItem config node = optional (nodeVisible node) (viewItem_ config node)
 
 viewItem_ : Config -> Node -> H.Html Msg
-viewItem_ config (Node key title opt children) =  
-  let 
+viewItem_ config (Node key title opt children) =
+  let
     style = find ((==) opt.style << (.name)) config.look.styles
     icon = Maybe.map ((.icon)) style
     class = Maybe.map ((.class)) style
@@ -404,37 +413,42 @@ viewItem_ config (Node key title opt children) =
       case children of Nothing -> " last"
                        _ -> if opt.opened then " opened" else ""
 
-    base = 
+    base =
       [ optional (children /= Nothing) <|
           H.a [ HA.class "toggle"
               , HA.href "#"
-              , HE.onClick (Toggle key)
+              , onClickEvent (Toggle key)
               , HA.disabled opt.disabled ] [ awesome (clsTick opt.opened) ]
-      , optional config.checkbox.enable 
+      , optional config.checkbox.enable
           <| viewItemCheckbox config.checkbox.multiple config.checkbox.cascade opt.checked key
       , optional (ic /= "") (awesome ic)
       , if opt.selectable then
           H.a [ HA.href "#"
-              , HE.onClick (Select key)
+              , onClickEvent (Select key)
               , HA.disabled opt.disabled ] [ H.text title ]
         else
           H.span [] [ H.text title ]
       ]
 
-  in 
+  in
     if opt.opened then
-      case children of 
+      case children of
         Nothing -> H.li [HA.class cl] base
-        Just c  -> H.li [HA.class cl] 
+        Just c  -> H.li [HA.class cl]
           <| List.append base [H.ul [HA.class "group"] <| List.map (viewItem config) c]
-    else 
+    else
       H.li [HA.class cl] base
+
+
+onClickEvent : msg -> H.Attribute msg
+onClickEvent evt = HE.onWithOptions "click"
+  { stopPropagation = True,  preventDefault = True } (Decode.succeed evt)
 
 
 -- Node checkbox view.
 viewItemCheckbox : Bool -> Bool -> Bool -> Key -> H.Html Msg
 viewItemCheckbox multiple cascade value key =
-  H.input 
+  H.input
   [ HA.type_ "checkbox"
   , HA.checked value
   , HE.onClick (ToggleCheck multiple cascade key value)
@@ -446,7 +460,7 @@ viewItemCheckbox multiple cascade value key =
 
 -- Get the font-awesome icons of handles.
 clsTick : Bool -> String
-clsTick x = case x of 
+clsTick x = case x of
   True -> "angle-down"      -- "minus-square-o"
   False -> "angle-right"    -- "plus-square-o"
 
