@@ -14,3 +14,7 @@ require('./src/Example2')
 require('./src/Example3')
     .Example3
     .embed(document.getElementById('example3'));
+
+require('./src/Example4')
+    .Example4
+    .embed(document.getElementById('example4'));
