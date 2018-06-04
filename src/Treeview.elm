@@ -297,16 +297,16 @@ update msg model =
               _ -> model
 
 -- Update the options.checked value of nodes.
-check : Bool -> Bool -> Key -> Bool ->Model -> Model
+check : Bool -> Bool -> Key -> Bool -> Model -> Model
 check multiple cascade key value  =
   let
     freset = List.map (setNodesCheckedCascade False)
     fset = List.map (setNodeChecked cascade key value)
   in
     if multiple then
-      freset >> fset
-    else
       fset
+    else
+      freset >> fset
 
 -- Search the node and set the checked option. If cascade is True, the same
 -- value is applied to children.
