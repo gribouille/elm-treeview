@@ -29,21 +29,21 @@
     "test": "elm-test"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^0.1.16",
-    "copy-webpack-plugin": "^4.0.1",
-    "css-loader": "^0.28.4",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^0.28.11",
     "elm": "^0.18.0",
-    "elm-test": "^0.18.7",
-    "elm-webpack-loader": "^4.3.1",
-    "extract-text-webpack-plugin": "^3.0.0",
+    "elm-test": "^0.18.12",
+    "elm-webpack-loader": "^4.5.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^3.0.0",
-    "node-sass": "^4.5.3",
-    "sass-loader": "^6.0.6",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^6.0.7",
     "style-loader": "^0.18.2",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1",
-    "webpack-merge": "^4.1.0"
+    "webpack": "^3.12.0",
+    "webpack-dev-server": "^2.11.2",
+    "webpack-merge": "^4.1.2"
   },
   "dependencies": {
     "font-awesome": "^4.7.0"
