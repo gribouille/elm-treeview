@@ -47,7 +47,7 @@ model =
       T.node "pBf3" "image1.png" "image" True Nothing,
       T.node "pBf4" "image2.ppt" "image" True Nothing,
       T.node "pBf5" "image3.ppt" "image" True Nothing,
-      T.node "pBf5" "image4.ppt" "image" True Nothing
+      T.node "pBf6" "image4.ppt" "image" True Nothing
     ]
   ]
 
