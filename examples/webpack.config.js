@@ -75,7 +75,6 @@ const developmentConfig = {
                         loader: 'elm-webpack-loader',
                         options: {
                             verbose: true,
-                            warn: true,
                             debug: true
                         }
                     }
@@ -89,9 +88,11 @@ const developmentConfig = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [
-                                path.resolve(__dirname, 'node_modules'),
-                            ]
+                            sassOptions: {
+                                includePaths: [
+                                    path.resolve(__dirname, 'node_modules'),
+                                ]
+                            }
                         }
                     }
                 ]
@@ -109,7 +110,16 @@ const productionConfig = {
         rules: [{
             test: /\.elm$/,
             exclude: [/elm-stuff/, /node_modules/],
-            use: 'elm-webpack-loader'
+            use: [
+                    { loader: 'elm-hot-webpack-loader' },
+                    {
+                        loader: 'elm-webpack-loader',
+                        options: {
+                            optimize: true,
+                            verbose: true
+                        }
+                    }
+                ]
         }, {
             test: /\.sc?ss$/,
             use: ExtractTextPlugin.extract({
@@ -135,16 +145,7 @@ const productionConfig = {
                 from: 'favicon.ico'
             }
         ]),
-
-        htmlPlugin,
-
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compressor: {
-                warnings: false
-            }
-            // mangle:  true
-        })
+        htmlPlugin
     ]
 };
 

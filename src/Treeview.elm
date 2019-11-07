@@ -370,15 +370,15 @@ toggle key nodes =
 
 
 toggleItem : Key -> Node -> Node
-toggleItem key node =
-  if (nodeKey node) == key then toggleNode node
+toggleItem key n =
+  if (nodeKey n) == key then toggleNode n
   else
     let
-      children = nodeChildren node
+      children = nodeChildren n
     in
       case children of
-        Nothing -> node
-        Just c -> setNodeChildren (Just (List.map (toggleItem key) c)) node
+        Nothing -> n
+        Just c -> setNodeChildren (Just (List.map (toggleItem key) c)) n
 
 
 {-| Toggle all items. -}
@@ -388,12 +388,12 @@ toggleAll =
 
 
 toggleAllItem : Node -> Node
-toggleAllItem node =
+toggleAllItem n =
   let
-    children = nodeChildren node
+    children = nodeChildren n
       |> Maybe.andThen (Just << (List.map toggleAllItem))
   in
-    toggleNode node
+    toggleNode n
       |> setNodeChildren children
 
 
@@ -420,7 +420,7 @@ viewSearch config = H.div [ HA.class "search" ]
 
 -- Node view.
 viewItem : Config -> Node -> H.Html Msg
-viewItem config node = optional (nodeVisible node) (viewItem_ config node)
+viewItem config n = optional (nodeVisible n) (viewItem_ config n)
 
 viewItem_ : Config -> Node -> H.Html Msg
 viewItem_ config (Node key title opt children) =
@@ -464,8 +464,12 @@ viewItem_ config (Node key title opt children) =
 
 
 onClickEvent : msg -> H.Attribute msg
-onClickEvent evt = HE.onWithOptions "click"
-  { stopPropagation = True,  preventDefault = True } (Decode.succeed evt)
+onClickEvent evt = 
+  HE.custom "click" <| Decode.succeed 
+  { message = evt
+  , stopPropagation = True
+  , preventDefault = True
+  } 
 
 
 -- Node checkbox view.
