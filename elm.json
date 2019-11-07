@@ -1,0 +1,16 @@
+{
+    "type": "package",
+    "name": "gribouille/elm-treeview",
+    "summary": "ELM tree view component",
+    "repository": "https://github.com/gribouille/elm-treeview.git",
+    "license": "MPL-2.0",
+    "version": "2.0.0",
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "exposed-modules": ["Treeview"],
+    "dependencies": {
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/json": "1.0.0 <= v < 2.0.0"
+    },
+    "test-dependencies": {}
+}

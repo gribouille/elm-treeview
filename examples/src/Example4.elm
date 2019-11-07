@@ -1,5 +1,6 @@
 module Example4 exposing (main)
 
+import Browser
 import Html as H
 import Html.Events as HE
 import Treeview
@@ -37,10 +38,10 @@ viewToolbar tg =
     ]
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-  H.beginnerProgram
-    { model = model
+  Browser.sandbox
+    { init = model
     , view = view
     , update = update
     }

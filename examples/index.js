@@ -4,17 +4,21 @@ require('../styles/treeview.scss');
 require('font-awesome/scss/font-awesome.scss');
 
 require('./src/Example1')
+    .Elm
     .Example1
-    .embed(document.getElementById('example1'));
+    .init({node: document.getElementById('example1')});
 
 require('./src/Example2')
+    .Elm
     .Example2
-    .embed(document.getElementById('example2'));
+    .init({node: document.getElementById('example2')});
 
 require('./src/Example3')
+    .Elm
     .Example3
-    .embed(document.getElementById('example3'));
+    .init({node: document.getElementById('example3')});
 
 require('./src/Example4')
+    .Elm
     .Example4
-    .embed(document.getElementById('example4'));
+    .init({node: document.getElementById('example4')});

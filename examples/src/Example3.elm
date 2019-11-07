@@ -1,6 +1,6 @@
 module Example3 exposing (main)
 
-import Html
+import Browser 
 import Treeview as T
 import Data exposing (styles, model)
 
@@ -13,10 +13,10 @@ config =
     {d | checkbox = { enable = True, multiple = True, cascade = True}}
 
 
-main : Program Never T.Model T.Msg 
+main : Program () T.Model T.Msg 
 main =
-  Html.beginnerProgram
-    { model = model
+  Browser.sandbox
+    { init = model
     , view = T.view config
     , update = T.update 
     }

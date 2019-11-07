@@ -126,6 +126,7 @@ Open [localhost:8080](http://localhost:8080).
 
 
 ## TODO
+- [x] updated for ELM 0.19.x
 - [x] search toolbar
 - [x] checkbox
 - [ ] ajax
