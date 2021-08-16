@@ -40,6 +40,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+examples/node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -111,6 +112,8 @@ dist
 
 # elm-package generated files
 elm-stuff/
+examples/elm-stuff/
+
 # elm-repl generated files
 repl-temp-*
 
