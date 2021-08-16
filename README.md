@@ -142,4 +142,4 @@ Feedback and contributions are very welcome.
 
 ## License
 
-This project is licensed under [MIT](./LICENSE).
+This project is licensed under [Mozilla Public License Version 2.0](./LICENSE).
