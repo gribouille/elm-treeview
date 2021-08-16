@@ -1,0 +1,27 @@
+{
+  "name": "elm-treeview",
+  "version": "2.0.1",
+  "description": "ELM treeview component",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gribouille/elm-treeview.git"
+  },
+  "keywords": [
+    "elm",
+    "treeview",
+    "javascript"
+  ],
+  "author": "Hakim Taklanti <hakim.taklanti@ovhcloud.com>",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/gribouille/elm-treeview/issues"
+  },
+  "homepage": "https://github.com/gribouille/elm-treeview#readme"
+}

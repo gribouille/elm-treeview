@@ -115,9 +115,3 @@ elm-stuff/
 repl-temp-*
 
 elm.js
-
-elm-stuff/
-tests/elm-stuff/
-repl-temp-*
-dist/
-.directory
