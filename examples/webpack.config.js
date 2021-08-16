@@ -1,156 +1,127 @@
-'use strict';
+'use strict'
 
-const webpack               = require('webpack');
-const path                  = require('path');
-const merge                 = require('webpack-merge');
-const ExtractTextPlugin     = require("extract-text-webpack-plugin");
-const HtmlWebpackPlugin     = require('html-webpack-plugin');
-const CopyWebpackPlugin     = require('copy-webpack-plugin');
-const CleanWebpackPlugin    = require('clean-webpack-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const { merge } = require('webpack-merge')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 
-const port              = 8080;
-const host              = 'localhost';
-const title             = 'ELM autocomplete component example';
-const author            = 'Gribouille';
-const target            = process.env.npm_lifecycle_event;
-const entryPath         = path.join(__dirname, 'index.js');
-const outputPath        = path.join(__dirname, 'dist');
-const outputFilename    = target === 'dist' ? '[name]-[hash].js' : '[name].js'
-
-
-const htmlPlugin = new HtmlWebpackPlugin({
-    template: 'index.html',
-    inject: 'body',
-    filename: 'index.html',
-    title: title,
-    author: 'Gribs'
-});
+const port = 8080
+const host = 'localhost'
+const title = 'ELM autocomplete component example'
+const author = 'Gribouille'
+const target = process.env.npm_lifecycle_event
+const entryPath = path.join(__dirname, 'index.js')
+const outputPath = path.join(__dirname, 'dist')
 
 
 // Common configuration
 const commonConfig = {
+    mode: target === 'build' ? 'production' : 'development',
     output: {
         path: outputPath,
-        filename: `static/js/${outputFilename}`,
-
+        filename: target === 'build' ? '[name]-[fullhash].js' : '[name].js',
     },
     resolve: {
         extensions: ['.js', '.elm'],
-        modules: ['node_modules']
+        modules: [path.resolve(__dirname, './src'), 'node_modules']
     },
     module: {
         noParse: /\.elm$/,
-        rules: [{
-            test: /\.(eot|ttf|woff|woff2|svg)$/,
-            use: 'file-loader?publicPath=../../&name=static/css/[hash].[ext]'
-        }]
-    }
+        rules: [
+            {
+                test: /\.(ts|js)x?$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use: ['style-loader', 'css-loader', 'resolve-url-loader', 'sass-loader']
+            }
+        ]
+    },
+    plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'favicon.ico',
+                    to: outputPath
+                }
+            ]
+        }),
+        new HtmlWebpackPlugin({
+            template: 'index.html',
+            inject: 'body',
+            filename: 'index.html',
+            title: title,
+            author: author
+        })
+    ]
 }
 
 // Development mode
 const developmentConfig = {
-    entry: [
-        `webpack-dev-server/client?http://${host}:${port}`,
-        entryPath
-    ],
+    entry: entryPath,
     devServer: {
-        // serve index.html in place of 404 responses
+        disableHostCheck: true,
         historyApiFallback: true,
-        contentBase: [
-            '../src', 
-            '../node_modules', 
-            './src', 
-            './'
-        ],
-        hot: true
+        host: host,
+        port: port,
+        hot: true,
+        contentBase: ['node_modules', '.'].map(x => path.resolve(__dirname, x)),
+        publicPath: '/',
+        watchOptions: {
+            ignored: path.resolve(__dirname, 'node_modules')
+        },
     },
     module: {
         rules: [
             {
                 test: /\.elm$/,
                 exclude: [/elm-stuff/, /node_modules/],
-                use: [
-                    {
-                        loader: 'elm-webpack-loader',
-                        options: {
-                            verbose: true,
-                            debug: true
-                        }
+                use: {
+                    loader: 'elm-webpack-loader',
+                    options: {
+                        debug: true
                     }
-                ]
-            }, 
-            {
-                test: /\.sc?ss$/,
-                use: [
-                    {loader: 'style-loader'}, 
-                    {loader: 'css-loader'}, 
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sassOptions: {
-                                includePaths: [
-                                    path.resolve(__dirname, 'node_modules'),
-                                ]
-                            }
-                        }
-                    }
-                ]
+                }
             }
         ]
     },
-    plugins: [htmlPlugin]
-};
+
+}
 
 
 // Production mode
 const productionConfig = {
     entry: entryPath,
     module: {
-        rules: [{
-            test: /\.elm$/,
-            exclude: [/elm-stuff/, /node_modules/],
-            use: [
-                    { loader: 'elm-hot-webpack-loader' },
-                    {
-                        loader: 'elm-webpack-loader',
-                        options: {
-                            optimize: true,
-                            verbose: true
-                        }
-                    }
-                ]
-        }, {
-            test: /\.sc?ss$/,
-            use: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: [
-                    'css-loader', 
-                    'sass-loader'
-                ]
-            })
-        }]
-    },
-    plugins: [
-        new ExtractTextPlugin({
-            filename: 'static/css/[name]-[hash].css',
-            allChunks: true,
-        }),
-        new CopyWebpackPlugin([
-            // {
-            //     from: 'assets/images/',
-            //     to: 'static/images/'
-            // }, 
+        rules: [
             {
-                from: 'favicon.ico'
+                test: /\.elm$/,
+                exclude: [/elm-stuff/, /node_modules/],
+                use: {
+                    loader: 'elm-webpack-loader',
+                    options: {
+                        optimize: true,
+                        runtimeOptions: ['-A128M', '-H128M', '-n8m']
+                    }
+                }
             }
-        ]),
-        htmlPlugin
-    ]
-};
+        ]
+    },
+    optimization: {
+        minimize: true,
+        nodeEnv: 'production',
+        splitChunks: {
+            chunks: 'all'
+        }
+    }
+}
 
 if (target === 'dev') {
-    module.exports = merge(commonConfig, developmentConfig);
+    module.exports = merge(commonConfig, developmentConfig)
 } else {
-    module.exports = merge(commonConfig, productionConfig);
+    module.exports = merge(commonConfig, productionConfig)
 }

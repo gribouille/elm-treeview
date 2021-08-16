@@ -23,27 +23,26 @@
     "url": "git+ssh://git@github.com/gribouille/elm-treeview.git"
   },
   "scripts": {
-    "dist": "webpack",
-    "dev": "webpack-dev-server --watch --debug --progress --hot",
+    "build": "webpack",
+    "dev": "webpack serve --color --progress",
     "repl": "elm-repl",
     "test": "elm-test"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.0.5",
-    "css-loader": "^3.2.0",
-    "elm-hot-webpack-loader": "^1.1.5",
-    "elm-webpack-loader": "^6.0.1",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^4.2.0",
-    "html-webpack-plugin": "^3.2.0",
-    "node-sass": "^4.13.0",
-    "sass-loader": "^8.0.0",
-    "style-loader": "^1.0.0",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
-    "webpack-merge": "^4.2.2"
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.2.0",
+    "elm-webpack-loader": "^8.0.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "resolve-url-loader": "^4.0.0",
+    "sass": "^1.37.5",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
     "font-awesome": "^4.7.0"

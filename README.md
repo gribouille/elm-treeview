@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/gribouille/elm-treeview.svg?branch=master)](https://travis-ci.org/gribouille/elm-treeview)
 
-A customizable ELM treeview component. 
+A customizable ELM treeview component.
 
 [DEMOS](https://gribouille.github.io/demos/elm-treeview/latest/)
 
@@ -16,7 +16,7 @@ import Html
 import Treeview
 
 styles : Styles
-styles = 
+styles =
   [ T.Style "folder" ("folder yellow", "folder-open yellow") ""
   , T.Style "archive" ("file-archive-o", "file-archive-o") ""
   , T.Style "word" ("file-word-o", "file-word-o") "blue"
@@ -27,7 +27,7 @@ styles =
   ]
 
 model : Model
-model = 
+model =
   [ T.node "pA" "Project A" "folder" False <| Just [
       T.node "pAg1" "Report 1" "folder" False <| Just [
         T.node "pAg1f1" "report_1_revA.pdf" "pdf" True Nothing,
@@ -55,43 +55,43 @@ config : T.Config
 config = T.default styles
 
 
-main : Program Never T.Model T.Msg 
+main : Program Never T.Model T.Msg
 main =
   Html.beginnerProgram
     { model = model
     , view = T.view config
-    , update = T.update 
+    , update = T.update
     }
 ```
 
-<p align="center"><img src="./ex1.png" /></p>
+<p align="center"><img src="./examples/ex1.png" /></p>
 
 
 With search input:
 
 ```elm
 config : T.Config
-config = 
+config =
   let
     d = T.default styles
   in
     {d | search = { enable = True}}
 ```
 
-<p align="center"><img src="./ex2.png" /></p>
+<p align="center"><img src="./examples/ex2.png" /></p>
 
 With checkbox selection:
 
 ```elm
 config : T.Config
-config = 
+config =
   let
     d = T.default styles
   in
     {d | checkbox = { enable = True, multiple = True, cascade = True}}
 ```
 
-<p align="center"><img src="./ex3.png" /></p>
+<p align="center"><img src="./examples/ex3.png" /></p>
 
 
 ## Theme
@@ -131,7 +131,7 @@ Open [localhost:8080](http://localhost:8080).
 - [x] checkbox
 - [ ] ajax
 - [ ] interface for JS
-- [ ] other themes 
+- [ ] other themes
 - [ ] contextual menu
 - [ ] unit test
 
