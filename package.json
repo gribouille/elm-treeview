@@ -1,6 +1,6 @@
 {
   "name": "elm-treeview",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "ELM treeview component",
   "main": "index.js",
   "directories": {
@@ -18,7 +18,7 @@
     "treeview",
     "javascript"
   ],
-  "author": "Hakim Taklanti <hakim.taklanti@ovhcloud.com>",
+  "author": "Gribouille <gribouille.git@gmail.com>",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/gribouille/elm-treeview/issues"
